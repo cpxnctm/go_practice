@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/cpxnctm/go_practice/master/001-practice/tempconv"
+	"github.com/cpxnctm/go_practice/001-practice/tempconv"
 )
 
 func main(){
