@@ -39,7 +39,6 @@ func handle(conn net.Conn){
 			log.Println(err)
 		}
 		defer lg.Close()
-		log.SetOutput(lg)
 
 
 	}
