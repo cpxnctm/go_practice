@@ -34,18 +34,18 @@ func handle(conn net.Conn){
 		if err != nil {
 			fmt.Println(err)
 		}
+		os.Open("logging.txt")
 		defer lg.Close()
 		w1, err := lg.WriteString(ln)
 		if err != nil {
 			fmt.Println(err)
 		fmt.Printf("%b", w1)
-
+			lg.Sync()
 		}
-
-
 
 		fmt.Println(ln)
 		fmt.Fprintf(conn, "You sent: %s\n", ln)
+
 
 	}
 	defer conn.Close()
