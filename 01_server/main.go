@@ -30,16 +30,22 @@ func handle(conn net.Conn){
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan(){
 		ln := scanner.Text()
-		fmt.Println(ln)
-		ct:= fmt.Fprintf(conn, "You sent: %s\n", ln)
-
-		os.Create("logs.txt")
-		lg, err := os.OpenFile("logs.txt",os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+		lg, err := os.Create("logging.txt")
 		if err != nil {
-			log.Println(err)
+			fmt.Println(err)
 		}
 		defer lg.Close()
+		w1, err := lg.WriteString(ln)
+		if err != nil {
+			fmt.Println(err)
+		fmt.Printf("%b", w1)
 
+		}
+
+
+
+		fmt.Println(ln)
+		fmt.Fprintf(conn, "You sent: %s\n", ln)
 
 	}
 	defer conn.Close()
