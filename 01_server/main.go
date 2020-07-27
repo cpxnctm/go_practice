@@ -3,14 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/websocket"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize: 1024,
+	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
-
 }
 
 func main() {
@@ -25,7 +26,7 @@ func setupRoutes() {
 
 }
 func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to the Homepage!")
+	fmt.Fprintf(w, "Welcome to the ws Homepage!")
 }
 
 //check incoming origin
@@ -41,13 +42,24 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	reader(ws)
 }
 
-func reader(conn *websocket.Conn){
+func reader(conn *websocket.Conn) {
+	//create a log to capture the stdin- defer closing the file
+	lg, err := os.Create("logging.txt")
+	if err != nil {
+		log.Println(err)
+		defer lg.Close()
+	}
 	for {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
+		err1 := ioutil.WriteFile("logging.txt", p, 0644)
+		if err != nil {
+			log.Println(err1)
+		}
+
 		fmt.Println(string(p))
 
 		if err := conn.WriteMessage(messageType, p); err != nil {
@@ -56,5 +68,3 @@ func reader(conn *websocket.Conn){
 		}
 	}
 }
-
-
