@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/websocket"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -43,22 +42,21 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 }
 
 func reader(conn *websocket.Conn) {
-	//create a log to capture the stdin- defer closing the file
-	lg, err := os.Create("logging.txt")
+	//create the logfile
+	f, err := os.OpenFile("logging.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println(err)
-		defer lg.Close()
 	}
+	defer f.Close()
 	for {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		err1 := ioutil.WriteFile("logging.txt", p, 0644)
-		if err != nil {
-			log.Println(err1)
-		}
+		//output data to the logfile
+		lg := log.New(f, "logging:", log.LstdFlags)
+		lg.Printf("%s\n",p)
 
 		fmt.Println(string(p))
 
@@ -67,4 +65,5 @@ func reader(conn *websocket.Conn) {
 			return
 		}
 	}
+
 }
