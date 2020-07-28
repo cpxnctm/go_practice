@@ -54,10 +54,10 @@ func reader(conn *websocket.Conn) {
 			log.Println(err)
 			return
 		}
-		fmt.Println(string(p))
+		//fmt.Println(string(p))
 		//output data to the logfile
 		lg := log.New(f, "logging:", log.LstdFlags)
-		lg.Printf("%s\n",p)
+		lg.Printf("%s\n", p)
 
 		if err := conn.WriteMessage(messageType, p); err != nil {
 			log.Println(err)
@@ -65,4 +65,4 @@ func reader(conn *websocket.Conn) {
 		}
 	}
 
-
+}
